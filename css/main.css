@@ -1,0 +1,20 @@
+body
+{
+	padding-top: 3em;
+	padding-bottom: 30px;
+}
+
+form#search
+{
+	margin-bottom: 1em;
+}
+
+.loader
+{
+	background: url('../img/loader.gif') center center no-repeat;
+	width: auto;
+	height: 45px;
+	display: none;
+}
+
+#lsd-table th.actions { width: 5%; }

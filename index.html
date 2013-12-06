@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<!-- Note there is no responsive meta tag here -->
+
+		<title>Lite Search Deezer</title>
+
+		<!-- Bootstrap core CSS -->
+		<link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css">
+		<!-- Custom Style -->
+		<link rel="stylesheet" href="css/main.css">
+		<link rel="stylesheet" href="lib/jquery/tablesorter/theme.default.css">
+	</head>
+	
+	<body role="main">
+
+		<!-- Fixed navbar -->
+		<nav role="navigation" class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Lite Search Deezer</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#" data-target="#about" data-toggle="modal">About</a></li>
+					</ul>
+				</div><!--/.nav-collapse -->
+			</div>
+		</nav>
+
+		<div class="container">
+
+			<div class="page-header">
+				<h1>Welcome to <strong>Lite Search Deezer</strong></h1>
+				<p class="lead">Just type a song/artist/album name and enjoy !</p>
+			</div>
+
+			<form class="row" id="search">
+				<div class="col-md-7 col-md-offset-2">
+					<input class="form-control input-lg text-center" type="search" id="q" name="q" placeholder="Search the awesome...">
+				</div>
+				<div class="col-md-1 loader">
+					<!-- <input class="btn btn-primary btn-lg btn-block" type="submit" id="submit" value="Search"> -->
+				</div>
+			</form>
+			<div class="clearfix"></div>
+
+			<table class="table table-condensed table-striped table-hover" id="lsd-table">
+				<thead>
+					<tr>
+						<th data-resizable="false" data-sorter="false" class="actions"></th>
+						<th class="title">Titre</th>
+						<th class="album">Album</th>
+						<th class="artist">Artiste</th>
+					</tr>
+				</thead>
+				<tfoot></tfoot>
+
+				<tbody id="search-results">
+				</tbody>
+			</table>
+
+		</div> <!-- /container -->
+
+		<section class="modal fade" id="about">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title">About Lite Search Deezer</h4>
+					</div>
+					<div class="modal-body">
+						<p>A little application which calls Deezer API. <br>
+							Any similarity of the application name with an illegal substance is purely coincidental.</p>
+					</div>
+					<div class="modal-footer">
+						<a href="https://github.com/jmpp/lsd" class="btn btn-info" data-dismiss="modal">View on Github &raquo;</a>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</section><!-- /.modal -->
+
+		<audio id="preview"></audio>
+
+		<!-- Require JS to init the main application
+		================================================== -->
+		<script src="lib/require.js" data-main="scripts/main"></script>
+	</body>
+</html>
