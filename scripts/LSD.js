@@ -10,8 +10,6 @@ define(['jquery'], function($) {
 		this._isPlaying = false;
 	}
 
-	LSD.prototype.constructor = LSD.Deezer;
-
 	/**
 	 * callAPI( params )
 	 * @params : an object : { string "query" [, function "callback"] }
@@ -51,7 +49,7 @@ define(['jquery'], function($) {
 
 	LSD.prototype.buildList = function( response, callback )
 	{
-		// Getting ALL results of the query within a single Array, then, we'll load the results 30 by 30 when scrolling (this will save Ajax requests)
+		// Getting ALL results of the query within a single Array, then, we'll pickup the next results from this array when scrolling (this will save Ajax requests)
 		if (this._resultsList.length === 0)
 		{
 			var element, row;
@@ -63,11 +61,11 @@ define(['jquery'], function($) {
 					continue;
 
 				row = 	'<tr>' +
-							'<td><div class="btn-group btn-group-xs"><button data-preview="'+ element.preview +'" class="btn btn-primary"><i class="glyphicon glyphicon-play"></i></button></div></td>' +
-							'<td>' + element.title + '</td>' +
-							'<td>' + element.album.title + '</td>' +
-							'<td>' + element.artist.name + '</td>' +
-						'</tr>';
+						'<td><div class="btn-group btn-group-xs"><button data-preview="'+ element.preview +'" class="btn btn-primary"><i class="glyphicon glyphicon-play"></i></button></div></td>' +
+						'<td>' + element.title + '</td>' +
+						'<td>' + element.album.title + '</td>' +
+						'<td>' + element.artist.name + '</td>' +
+					'</tr>';
 
 				this._resultsList.push( row );
 			}
