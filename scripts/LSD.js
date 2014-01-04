@@ -8,7 +8,11 @@ define(['jquery'], function($) {
 		this._nbRowsPerScroll = 3; // Ajout des rows 3 par 3
 		this._resultsList = [];
 		this._isPlaying = false;
+		this._button = null;
+		this._noMoreResults = false;
 	}
+
+	LSD.prototype.constructor = LSD.Deezer;
 
 	/**
 	 * callAPI( params )
@@ -20,6 +24,9 @@ define(['jquery'], function($) {
 		// Building new list, so let's reset the old entries
 		this._resultsList = [];
 		this._page = 1;
+		this._noMoreResults = false;
+		// Force music to stop
+		this.musicStop();
 
 		var req = $.ajax({
 			dataType : 'jsonp',
@@ -49,6 +56,7 @@ define(['jquery'], function($) {
 
 	LSD.prototype.buildList = function( response, callback )
 	{
+
 		// Getting ALL results of the query within a single Array, then, we'll pickup the next results from this array when scrolling (this will save Ajax requests)
 		if (this._resultsList.length === 0)
 		{
@@ -71,7 +79,7 @@ define(['jquery'], function($) {
 			}
 		}
 
-		while ($(document).height() === $(window).height()) {
+		while ($(document).height() === $(window).height() && this._resultsList.length > 0 && !this._noMoreResults) {
 			this.addResultsToList( callback || null );
 		}
 
@@ -91,8 +99,11 @@ define(['jquery'], function($) {
 		var rows = '';
 		for (var i = (this._page - 1) * this._nbRowsPerScroll; i < this._nbRowsPerScroll * this._page; ++i)
 		{
-			if (undefined === this._resultsList[i])
+
+			if (undefined === this._resultsList[i]) {
+				this._noMoreResults = true;
 				break;
+			}
 
 			rows += this._resultsList[i] + "\n";
 		}
@@ -105,7 +116,7 @@ define(['jquery'], function($) {
 			// Removing all possible previous event listeners (saving memory)
 			$(this).off('click', that.onClicPlay);
 			// Setting new event listeners in relationship with the new results list
-			$(this).on('click', that.onClicPlay);
+			$(this).on('click', '', that, that.onClicPlay);
 		} );
 
 		this._page++;
@@ -121,28 +132,60 @@ define(['jquery'], function($) {
 	 * Toggle behavior when clicking on a button "play/stop"
 	**/
 
-	LSD.prototype.onClicPlay = function()
+	LSD.prototype.onClicPlay = function(evt)
 	{
+		var that = evt.data;
 
-		var $button = $(this).find('.glyphicon');
-		this._isPlaying = !! $button.hasClass('glyphicon-stop');
+		that._button = $(this).find('.glyphicon'),
+		that._isPlaying = !! that._button.hasClass('glyphicon-stop');
 
-		var audio = $('#preview').get(0);
-		if (this._isPlaying) {
-			// _playerState = 'stop';
-			this._isPlaying = false;
-			audio.pause();
-			$button.removeClass('glyphicon-stop').addClass('glyphicon-play');
-		} else {
-			$('#preview').attr({
-				'src' : $(this).data('preview'),
-				'autoplay' : true
-			});
-			this._isPlaying = true;
-			audio.play();
-			$('.glyphicon').removeClass('glyphicon-stop').addClass('glyphicon-play');
-			$button.removeClass('glyphicon-play').addClass('glyphicon-stop');
-		}
+		var preview = $(this).data('preview');
+
+		if (that._isPlaying)	that.musicStop();
+		else					that.musicPlay( preview );
+
+	};
+
+	/**
+	 * musicPlay()
+	 * --
+	 * Set the audio tag with the given 'src' parameter
+	**/
+
+	LSD.prototype.musicPlay = function( src )
+	{
+		
+		if (this._isPlaying)
+			return false;
+
+		this._isPlaying = true;
+
+		$('#preview').attr({
+			'src' : src,
+			'autoplay' : true
+		});
+		$('#preview').get(0).play();
+		$('.glyphicon').removeClass('glyphicon-stop').addClass('glyphicon-play'); // Putting all glyphicons back to "play" state
+		this._button.removeClass('glyphicon-play').addClass('glyphicon-stop'); // Changing the "current playing" button's glyphicon to "stop" state
+
+	};
+
+	/**
+	 * stopMusic()
+	 * --
+	 * Reset the audio tag
+	**/
+
+	LSD.prototype.musicStop = function()
+	{
+		
+		if (!this._isPlaying)
+			return false;
+
+		this._isPlaying = false;
+
+		$('#preview').get(0).pause();
+		$('.glyphicon').removeClass('glyphicon-stop').addClass('glyphicon-play'); // Putting all glyphicons back to "play" state
 
 	};
 

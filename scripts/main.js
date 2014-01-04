@@ -35,36 +35,45 @@ require(['jquery', 'LSD'], function($, LSD) {
 		$('#lsd-table').trigger("sorton",[[[0,0],[0,0]]]); 
 	}
 
+	// Function to process to launch a research
+	var launchSearch = function() {
+		if ($('#q').val() === '')
+			return false;
+
+		// Display loader
+		$('.loader').show();
+
+		// Call me maybe !
+		LSD.callAPI({
+			query : $('#q').val(),
+			callback : function( response ) {
+
+				// Hide loader
+				$('.loader').hide();
+
+				LSD.buildList( response, resetTableSorter );
+			}
+		});
+
+		// Reset results list ...
+		$('#search-results').html('');
+	};
 
 	var _keyDownTimer = 0;
 	var _searchDelay = 1000;
+
 	// At keydown, let's call the Deezer API
 	$('#q').on('keydown', function(evt) {
 		clearTimeout( _keyDownTimer );
-		_keyDownTimer = setTimeout(function() {
-			if ($('#q').val() === '')
-				return false;
-
-			// Display loader
-			$('.loader').show();
-
-			// Call me maybe !
-			LSD.callAPI({
-				query : $('#q').val(),
-				callback : function( response ) {
-					// Hide loader
-					$('.loader').hide();
-
-					LSD.buildList( response, resetTableSorter );
-				}
-			});
-
-			// Reset results list ...
-			$('#search-results').html('');
-
-		}, _searchDelay);
+		_keyDownTimer = setTimeout(launchSearch, _searchDelay);
 	});
 
+	// ... or call it immediately if the user presses 'Enter'
+	$('#search').on('submit', function(evt) {
+		evt.preventDefault();
+		clearTimeout( _keyDownTimer );
+		launchSearch();
+	});
 
 	// Scrolling will load the next results
 	$(window).scroll(function() {
